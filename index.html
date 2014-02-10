@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Phaser - Making your first game, part 1</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(640, 640, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function preload() {
+
+    game.load.tilemap('tilemap', 'assets/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', 'assets/stuff.png');
+    game.load.spritesheet('player', 'assets/sprite.png', 16, 32);
+
+}
+
+var map,
+    tileset,
+    layer,
+    floors,
+    player,
+    chairs,
+    cursors;
+
+function create() {
+
+    game.stage.backgroundColor = '#fff';
+
+    map = game.add.tilemap('tilemap');
+    map.addTilesetImage('stuff', 'tiles');
+
+    _.each(map.tilesets, function(tilesets){
+    console.log(tilesets);
+        _.each(tilesets.tileProperties, function(tile, key){
+            if(tile.collision){
+                console.log(+key + 1);
+                map.setCollision(+key + 1);
+            };
+        });
+    });
+
+    layer = map.createLayer('Tile Layer 1');
+    layer.resizeWorld();
+
+    cursors = game.input.keyboard.createCursorKeys();
+
+    game.physics.gravity.y = 250;
+
+    player = game.add.sprite(100, 100, 'player');
+    player.body.bounce.y = 0.2;
+    player.body.linearDamping = 1;
+    player.body.collideWorldBounds = true;
+
+    player.animations.add('left', [1, 2, 1, 3], 10, true);
+    player.animations.add('right', [1, 2, 1, 3], 10, true);
+    player.anchor.setTo(.5, 1)
+
+    game.camera.follow(player);
+
+}
+
+function update() {
+
+    game.physics.collide(player, layer);
+
+    //  Reset the players velocity (movement)
+    player.body.velocity.x = 0;
+
+    if (cursors.left.isDown){
+        player.body.velocity.x = -75;
+        player.scale.x = -1;
+        player.animations.play('left');
+    }
+    else if (cursors.right.isDown){
+        player.body.velocity.x = 75;
+        player.scale.x = 1;
+        player.animations.play('right');
+    }
+    else{
+        player.frame = 0;
+    }
+
+    // Jumping
+    if (cursors.up.isDown && player.body.onFloor()){
+        player.body.velocity.y = -120;
+    }
+}
+
+</script>
+
+</body>
+</html>
