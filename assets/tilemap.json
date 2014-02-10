@@ -10,6 +10,73 @@
          "width":200,
          "x":0,
          "y":0
+        }, 
+        {
+         "height":10,
+         "name":"danger",
+         "objects":[
+                {
+                 "gid":41,
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "type":"kill",
+                 "visible":true,
+                 "width":0,
+                 "x":415,
+                 "y":127
+                }, 
+                {
+                 "gid":41,
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "type":"kill",
+                 "visible":true,
+                 "width":0,
+                 "x":524,
+                 "y":128
+                }, 
+                {
+                 "gid":62,
+                 "height":0,
+                 "name":"start",
+                 "properties":
+                    {
+
+                    },
+                 "type":"restart",
+                 "visible":true,
+                 "width":0,
+                 "x":48,
+                 "y":112
+                }, 
+                {
+                 "gid":62,
+                 "height":0,
+                 "name":"first",
+                 "properties":
+                    {
+
+                    },
+                 "type":"restart",
+                 "visible":true,
+                 "width":0,
+                 "x":352,
+                 "y":96
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":200,
+         "x":0,
+         "y":0
         }],
  "orientation":"orthogonal",
  "properties":

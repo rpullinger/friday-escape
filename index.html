@@ -22,6 +22,7 @@ function preload() {
     game.load.tilemap('tilemap', 'assets/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/stuff.png');
     game.load.spritesheet('player', 'assets/sprite.png', 16, 32);
+    game.load.spritesheet('tilesheet', 'assets/stuff.png', 16, 16);
 
 }
 
@@ -31,7 +32,12 @@ var map,
     floors,
     player,
     chairs,
-    cursors;
+    cursors,
+    deathAreas,
+    lastPosition = {
+        x: 100,
+        y: 100
+    };
 
 function create() {
 
@@ -40,6 +46,7 @@ function create() {
     map = game.add.tilemap('tilemap');
     map.addTilesetImage('stuff', 'tiles');
 
+    // Find all hard tiles
     _.each(map.tilesets, function(tilesets){
     console.log(tilesets);
         _.each(tilesets.tileProperties, function(tile, key){
@@ -52,6 +59,18 @@ function create() {
 
     layer = map.createLayer('Tile Layer 1');
     layer.resizeWorld();
+
+    // load all the things that can kill you
+    deathAreas = game.add.group();
+    map.createFromObjects('danger', 41, 'tilesheet', 40, true, false, deathAreas);
+    deathAreas.setAll('body.immovable', true);
+    deathAreas.setAll('body.gravity', 0);
+
+    // load the restart areas
+    restartAreas = game.add.group();
+    map.createFromObjects('danger', 62, 'tilesheet', 62, true, false, restartAreas);
+    restartAreas.setAll('body.immovable', true);
+    restartAreas.setAll('body.gravity', 0);
 
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -73,6 +92,8 @@ function create() {
 function update() {
 
     game.physics.collide(player, layer);
+    game.physics.overlap(player, deathAreas, die, null, this);
+    game.physics.overlap(player, restartAreas, setLastRestart, null, this);
 
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
@@ -93,8 +114,18 @@ function update() {
 
     // Jumping
     if (cursors.up.isDown && player.body.onFloor()){
-        player.body.velocity.y = -120;
+        player.body.velocity.y = -150;
     }
+}
+
+function die(){
+    console.log('die');
+    player.reset(lastPosition.x, lastPosition.y);
+}
+
+function setLastRestart(area, thing){
+    lastPosition.x = thing.x;
+    lastPosition.y = thing.y;
 }
 
 </script>
